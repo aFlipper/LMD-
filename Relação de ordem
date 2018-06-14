@@ -1,0 +1,133 @@
+#include <time.h>
+#include <stdio.h>
+int verificaT(int a)
+{
+    int i, j, b, c;
+    for(i=0;i<13;i+=4)
+    {
+        for(j=0;j<4;j++)
+        {
+            if(((a>>(i+j))&1)==1)
+            {
+                b = (a>>(j*4))&15;
+                c = (a>>(i))&15;
+                if((c&b) !=b)
+                {
+                    return 0;
+                }
+
+            }
+        }
+    }
+    return 1;
+}
+int verificaF(int a)
+{
+    int c[4]={((a&61440)>>12),((a&3840)>>8),((a&240)>>4),(a&15)};
+    int i;
+    for(i=0;i<4;i++)
+    {
+        if((c[i]!=1)&&(c[i]!=2)&&(c[i]!=4)&&(c[i]!=8))
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+int verificaFi(int a)
+{
+    int i=0, b;
+    while(i<4)
+    {
+        b=(34952>>i);
+        if(((a&b)!=(32768>>i))&&((a&b)!=(2048>>i))&&((a&b)!=(128>>i))&&((a&b)!=(8>>i))&&((a&b)!=0))
+        {
+            return 0;
+        }
+        i++;
+    }
+    return 1;
+}
+int verificaFs(int a)
+{
+    int i=0, b;
+    while(i<4)
+    {
+        b=(34952>>i);
+        if((a&b)==0)
+        {
+                return 0;
+        }
+        i++;
+    }
+    return 1;
+}
+int main ()
+{
+    double tempo;
+    clock_t start, end;
+    start = clock();
+    freopen("testeoutput.txt","w",stdout);
+    int a,s, r, t=0, f=1, fi, fs, fb;
+    for(a=0;a<65536;a++)
+        {
+            printf("{");
+            s=0,r=0,t=0, f=0, fi=0, fs=0, fb=0;
+            //{Conjuntos
+            if((a&1)==1){printf("(4,4)");}
+            if((a&2)==2){printf("(4,3)");}
+            if((a&4)==4){printf("(4,2)");}
+            if((a&8)==8){printf("(4,1)");}
+            if((a&16)==16){printf("(3,4)");}
+            if((a&32)==32){printf("(3,3)");}
+            if((a&64)==64){printf("(3,2)");}
+            if((a&128)==128){printf("(3,1)");}
+            if((a&256)==256){printf("(2,4)");}
+            if((a&512)==512){printf("(2,3)");}
+            if((a&1024)==1024){printf("(2,2)");}
+            if((a&2048)==2048){printf("(2,1)");}
+            if((a&4096)==4096){printf("(1,4)");}
+            if((a&8192)==8192){printf("(1,3)");}
+            if((a&16384)==16384){printf("(1,2)");}
+            if((a&32768)==32768){printf("(1,1)");}
+            printf("}");
+            //}
+            //{I e R
+            if(((~a)&33825)==33825){printf("I");}
+            if((a&33825)==33825){printf("R");r=1;}
+            //}
+            //{S
+            if(((a&32768)==32768)||((a&18432)==18432)||((a&8320)==8320)||((a&4104)==4104)||((a&1024)==1024)||((a&576)==576)||((a&260)==260)||((a&32)==32)||((a&18)==18)||((a&1)==1)){s=1;}
+            if((((a&18432)!=18432)&&((a&18432)!=0))||(((a&8320)!=8320)&&((a&8320)!=0))||(((a&4104)!=4104)&&((a&4104)!=0))||(((a&576)!=576)&&((a&576)!=0))||(((a&260)!=260)&&((a&260)!=0))||(((a&18)!=18)&&((a&18)!=0))){s=0;}
+            if(s==1){printf("S");}
+            //}
+            //{T
+            t=verificaT(a);
+            if(t==1){printf("T");}
+            //}
+            //{E
+            if(t==1&&s==1&&r==1){printf("E");}
+            //}
+            //{F
+            f= verificaF(a);
+            if(a==0)(f=0);
+            if(f==1){printf("F");}
+            //}
+            //{Fi
+            if(f==1){fi=verificaFi(a);}
+            if(fi==1){printf("Fi");}
+            //}
+            //{Fs
+            if(f==1){fs=verificaFs(a);}
+            if(fs==1){printf("Fs");}
+            //}
+            //{Fb
+            if((fs==1)&&(fi==1)){printf("Fb");}
+            //}
+            printf("\n");
+        }
+
+    end = clock();
+    tempo = ((double)(end - start));
+    printf("tempo de execucao em ms:%f", tempo);
+}
