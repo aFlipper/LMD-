@@ -1,3 +1,4 @@
+//Tales Oliveira Neves, 11721ECP010
 #include <time.h>
 #include <stdio.h>
 int verificaT(int a)
